@@ -2,7 +2,7 @@
   <div class="column is-9-desktop is-8-fullhd is-9-tablet">
 
     <audio id="live-stream-media">
-      <source src="http://165.227.93.126:8000/briantest" type="audio/mp3" >
+      <source src="{{ site.icecast_server_mountpoint }}" type="audio/mp3" >
     </audio>
 
     <div class="columns is-vcentered">
@@ -26,59 +26,53 @@
 
 
 <script>
+  // script for custom buttons and status based on icecast server sharing live audio (podcast) stream
+  // written by Brian Reyman.
+  // initially created on 3/28/2020
+
+  // initiatilize some global variables
+
+  // html elements to manipulate classes and content throughout
+  var audioElem = document.getElementById("live-stream-media");
+  var myButton = document.getElementById("myPlayPauseButton");
+  var myIcon = document.getElementById("myPlayPauseButton-icon");
+  var myStreamColor = document.getElementById("stream-status-color");
+  var myStreamText = document.getElementById("stream-status-text");
 
   var shouldBePlaying = false;
   var streamingWorking = false;
+
+  var myRunningTime = 0; // keep track of how long the track has been playing
+  var myRunningTime2 = 0; // second variable to track things over time
+
+  // start assuming things shouldn't be available
   streamingUnavailable();
 
-
-  var audioElem = document.getElementById("live-stream-media");
-  var myRunningTime = 0;
-  var myRunningTime2 = 0;
-  console.log(myRunningTime);
-
-  // check every 2 seconds to see if stream is still working
+  // check every 5 seconds to see if stream is working
   var myTimer = setInterval(checkStream, 2000);
 
+  // see if the stream is working. Should audio be playing, but all the stream timings are at 0 for more than a few rounds?
+  // If so, the stream broke and we need to reset some interface and then begin checking for when it comes back online.
   function checkStream(){
     myTempTime = audioElem.currentTime;
 
-    // if it shoudl be streaming, but times are all zero
+    // if it should be streaming, but times are all zero, the stream feed stopped and we should turn things off
     if(shouldBePlaying && myTempTime === 0 && myRunningTime === 0){
       streamingUnavailable();
     }
 
+    // if nothing is working, keep checking and trying to load to see if it comes back online
     if(!shouldBePlaying && !streamingWorking){
-      // streamingAvailable();
       audioElem.load();
-      //audioElem.play();
-
     }
 
-    console.log("should be playing: "+shouldBePlaying);
-    console.log("streaming working: "+streamingWorking);
-    console.log(myRunningTime);
-
     myRunningTime = myTempTime;
-
   }
 
-
-  audioElem.addEventListener("error", function(){console.log("error")}, false);
-  audioElem.addEventListener("stalled", function(){console.log("stalled")}, false);
-  audioElem.addEventListener("ended", function(){console.log("ended")}, false);
-
-  // audioElem.addEventListener("progress", function(){console.log("progress")}, false);
-  // audioElem.addEventListener("timeupdate", function(){console.log("timeupdate")}, false);
-
-
+  // allow the user to click the play/pause button and have it toggle between the two.
+  // updates button and indicator colors/words/icons.
+  // plays or pauses the media, depending on what is needed
   function togglePlay(){
-    var audioElem = document.getElementById("live-stream-media");
-    var myButton = document.getElementById("myPlayPauseButton");
-    var myIcon = document.getElementById("myPlayPauseButton-icon");
-    var myStreamColor = document.getElementById("stream-status-color");
-    var myStreamText = document.getElementById("stream-status-text");
-
     myButton.setAttribute("class", "button is-primary");
 
     // pause or play media
@@ -99,13 +93,10 @@
     }
   }
 
+  // if streaming should be available, set labels and buttons to allow things.
+  // turn on a listener to see if it starts back up and turn off the listener to wait until things end
   function streamingAvailable(){
-    var audioElem = document.getElementById("live-stream-media");
-    var myButton = document.getElementById("myPlayPauseButton");
-    var myIcon = document.getElementById("myPlayPauseButton-icon");
-    var myStreamColor = document.getElementById("stream-status-color");
-    var myStreamText = document.getElementById("stream-status-text");
-
+    // turn on/off some listeners
     audioElem.removeEventListener("loadeddata", streamingAvailable, false);
     audioElem.addEventListener("ended", streamingUnavailable, false);
 
@@ -117,17 +108,13 @@
     myStreamText.innerHTML = "Streaming paused";
   }
 
+  // if streaming shouldn't be available, adjust status indicators and buttons to be greyed out.
+  // turn on a listener to see if it starts back up and turn off the listener to wait until things end
   function streamingUnavailable(){
-    var audioElem = document.getElementById("live-stream-media");
-    var myButton = document.getElementById("myPlayPauseButton");
-    var myIcon = document.getElementById("myPlayPauseButton-icon");
-    var myStreamColor = document.getElementById("stream-status-color");
-    var myStreamText = document.getElementById("stream-status-text");
-
     shouldBePlaying = false;
-
     streamingWorking = false;
 
+    // turn on/off some listeners
     audioElem.addEventListener("loadeddata", streamingAvailable, false);
     audioElem.removeEventListener("ended", streamingUnavailable, false);
 
@@ -136,6 +123,5 @@
     myStreamColor.setAttribute("class", "tag is-danger");
     myStreamText.innerHTML = "Show stream unavailable";
   }
-
 
 </script>
