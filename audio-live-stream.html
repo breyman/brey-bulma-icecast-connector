@@ -1,26 +1,20 @@
-<div class="columns is-centered">
-  <div class="column is-9-desktop is-8-fullhd is-9-tablet">
+<audio id="live-stream-media">
+  <source src="{{ page.icecast_server_mountpoint }}" type="audio/mp3" >
+</audio>
 
-    <audio id="live-stream-media">
-      <source src="{{ page.icecast_server_mountpoint }}" type="audio/mp3" >
-    </audio>
-
-    <div class="columns is-vcentered">
-      <div class="column is-narrow">
-          <button id="myPlayPauseButton" class="button is-primary" onclick="togglePlay();">
-            <span class="icon">
-              <i id="myPlayPauseButton-icon" class="fas fa-play"></i>
-            </span>
-          </button>
-          </div>
-          <div class="column">
-            <div class="tags has-addons">
-              <span id="stream-status-color" class="tag is-danger"></span>
-              <span id="stream-status-text" class="tag">Streaming paused</span>
-            </div>
-          </div>
+<div class="columns is-vcentered is-centered is-mobile">
+  <div class="column is-narrow">
+    <button id="myPlayPauseButton" class="button is-primary" onclick="togglePlay();">
+      <span class="icon">
+        <i id="myPlayPauseButton-icon" class="fas fa-play"></i>
+      </span>
+    </button>
+  </div>
+  <div class="column">
+    <div class="tags has-addons">
+      <span id="stream-status-color" class="tag is-danger"></span>
+      <span id="stream-status-text" class="tag">Streaming paused</span>
     </div>
-
   </div>
 </div>
 
