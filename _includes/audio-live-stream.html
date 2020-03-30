@@ -27,28 +27,49 @@
 
 <script>
 
+  var shouldBePlaying = false;
+  var streamingWorking = false;
   streamingUnavailable();
 
 
-  // var audioElem = document.getElementById("live-stream-media");
-  //
-  // var myTimer = setInterval(displayTime, 2000);
-  //
-  // function displayTime(){
-  //   var myCurrentTime = audioElem.currentTime;
-  //   if(myCurrentTime === 0){
-  //     console.log("it's zero!");
-  //   }
-  //
-  // }
+  var audioElem = document.getElementById("live-stream-media");
+  var myRunningTime = 0;
+  var myRunningTime2 = 0;
+  console.log(myRunningTime);
+
+  // check every 2 seconds to see if stream is still working
+  var myTimer = setInterval(checkStream, 2000);
+
+  function checkStream(){
+    myTempTime = audioElem.currentTime;
+
+    // if it shoudl be streaming, but times are all zero
+    if(shouldBePlaying && myTempTime === 0 && myRunningTime === 0){
+      streamingUnavailable();
+    }
+
+    if(!shouldBePlaying && !streamingWorking){
+      // streamingAvailable();
+      audioElem.load();
+      //audioElem.play();
+
+    }
+
+    console.log("should be playing: "+shouldBePlaying);
+    console.log("streaming working: "+streamingWorking);
+    console.log(myRunningTime);
+
+    myRunningTime = myTempTime;
+
+  }
 
 
   audioElem.addEventListener("error", function(){console.log("error")}, false);
   audioElem.addEventListener("stalled", function(){console.log("stalled")}, false);
-  // audioElem.addEventListener("ended", function(){console.log("ended")}, false);
+  audioElem.addEventListener("ended", function(){console.log("ended")}, false);
 
-  audioElem.addEventListener("progress", function(){console.log("progress")}, false);
-  audioElem.addEventListener("timeupdate", function(){console.log("timeupdate")}, false);
+  // audioElem.addEventListener("progress", function(){console.log("progress")}, false);
+  // audioElem.addEventListener("timeupdate", function(){console.log("timeupdate")}, false);
 
 
   function togglePlay(){
@@ -67,11 +88,14 @@
       myStreamText.innerHTML = "Streaming live";
       audioElem.load();
       audioElem.play();
+      shouldBePlaying = true;
+      myRunningTime = 1; // set temporarily to 1 to avoid losing a quick race condition
     } else{
       audioElem.pause();
       myIcon.setAttribute("class", "fas fa-play");
       myStreamColor.setAttribute("class", "tag is-warning");
       myStreamText.innerHTML = "Streaming paused";
+      shouldBePlaying = false;
     }
   }
 
@@ -83,8 +107,9 @@
     var myStreamText = document.getElementById("stream-status-text");
 
     audioElem.removeEventListener("loadeddata", streamingAvailable, false);
-
     audioElem.addEventListener("ended", streamingUnavailable, false);
+
+    streamingWorking = true;
 
     myButton.setAttribute("class", "button is-primary");
     myIcon.setAttribute("class", "fas fa-play");
@@ -98,6 +123,10 @@
     var myIcon = document.getElementById("myPlayPauseButton-icon");
     var myStreamColor = document.getElementById("stream-status-color");
     var myStreamText = document.getElementById("stream-status-text");
+
+    shouldBePlaying = false;
+
+    streamingWorking = false;
 
     audioElem.addEventListener("loadeddata", streamingAvailable, false);
     audioElem.removeEventListener("ended", streamingUnavailable, false);
