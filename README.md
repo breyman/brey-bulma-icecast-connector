@@ -11,7 +11,7 @@ Currently only mean to be embedded at most once on each page.
 If using with Jekyll:
 * Place directory in your Jekyll \_includes folder.
 * Include audio-live-stream.html into project, as desired.
-* Create and set the icecast_server_mountpoint variable in your Jekyll \_config.yml file.
+* Create and set the icecast_server_mountpoint variable in the page's front matter that is including the content.
 
 If not using with Jekyll:
 * Copy contents of audio-live-stream.html file into your project.
