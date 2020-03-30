@@ -1,0 +1,70 @@
+<div class="columns is-centered">
+  <div class="column is-9-desktop is-8-fullhd is-9-tablet">
+
+    <audio id="brianmp3">
+      <source src="https://traffic.libsyn.com/atpfm/atp371.mp3" type="audio/mp3" >
+      Your browser does not support the audio!
+    </audio>
+
+    <div class="columns is-vcentered">
+      <div class="column is-narrow">
+          <button id="myPlayButton" class="button is-primary" onclick="togglePlay();">
+            <span class="icon">
+              <i class="fas fa-play"></i>
+            </span>
+          </button>
+          <!-- <button id="myPauseButton" class="button is-static" onclick="togglePlay();"> -->
+          <button id="myPauseButton" class="button is-light" onclick="togglePlay();">
+            <span class="icon">
+              <i class="fas fa-slash"></i>
+            </span>
+          </button>
+          </div>
+          <div class="column">
+            <div class="tags has-addons">
+              <!-- <span id="stream-status-color" class="tag is-primary"></span> -->
+              <span id="stream-status-color" class="tag is-warning"></span>
+              <!-- <span id="stream-status-color" class="tag is-success"></span> -->
+              <!-- <span id="stream-status-text" class="tag">Show unavailable</span> -->
+              <span id="stream-status-text" class="tag">Streaming available but paused</span>
+              <!-- <span id="stream-status-text" class="tag">Streaming live</span> -->
+            </div>
+          </div>
+    </div>
+
+    <a id="briantag" href="https://www.amazon.com/">I am Brian</a>
+
+  </div>
+</div>
+
+
+<script>
+  hidePause();
+
+  document.getElementById("briantag").innerHTML = "I am Groot.";
+  document.getElementById("briantag").setAttribute("href", "https://www.google.com/");
+
+  function hidePause(){
+    var myPauseButton = document.getElementById("myPauseButton");
+    myPauseButton.style.display = "none";
+  }
+
+  function togglePlay(){
+    var audioElem = document.getElementById("brianmp3");
+    var myPlayButton = document.getElementById("myPlayButton");
+    var myPauseButton = document.getElementById("myPauseButton");
+
+    // pause or play media
+    if (audioElem.paused){
+      audioElem.play();
+      myPauseButton.style.display = "block";
+      myPlayButton.style.display = "none";
+    } else{
+      audioElem.pause();
+      myPlayButton.style.display = "block";
+      myPauseButton.style.display = "none";
+    }
+
+
+  }
+</script>
